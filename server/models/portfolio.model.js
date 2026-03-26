@@ -1,11 +1,6 @@
 import mongoose from "mongoose";
 
 const projectSchema = mongoose.Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: [true, "User ID is required"],
-    ref: "UserModel",
-  },
   projectName: {
     type: String,
     required: [true, "Project name is required"],
@@ -26,10 +21,8 @@ const projectSchema = mongoose.Schema({
   },
   projectStack: [
     {
-      name: {
-        type: String,
-        required: [true, "Please mention the used stack"],
-      },
+      type: String,
+      required: [true, "Please mention the used stack"],
     },
   ],
 });
@@ -40,6 +33,7 @@ const portfolioSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       required: [true, "User ID is required"],
       ref: "UserModel",
+      unique: true,
     },
     role: {
       type: String,
@@ -55,13 +49,14 @@ const portfolioSchema = mongoose.Schema(
     },
     skills: [
       {
-        skillName: {
-          type: String,
-          required: true,
-        },
+        type: String,
+        required: true,
       },
     ],
-    projects: [projectSchema],
+    projects: {
+      type: [projectSchema],
+      validate: [(val) => val.length <= 6, "Maximum 6 projects allowed"],
+    },
   },
   {
     timestamps: true,
